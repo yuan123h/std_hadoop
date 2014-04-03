@@ -33,6 +33,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.protocol.FSConstants;
 
 /**
+ * Lease可以认为是一个文件写锁，当客户端需要写文件的时候，它需要申请一个Lease
+ * </br>
  * LeaseManager does the lease housekeeping for writing on files.   
  * This class also provides useful static methods for lease recovery.
  * 

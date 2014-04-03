@@ -1593,7 +1593,8 @@ public class FSNamesystem implements FSConstants, FSNamesystemMBean,
     return b;
   }
 
-  /**
+  /**datanode 出现错误，客户端向 namenode 请求放弃block
+   * </br>
    * The client would like to let go of the given block
    */
   public synchronized boolean abandonBlock(Block b, String src, String holder
