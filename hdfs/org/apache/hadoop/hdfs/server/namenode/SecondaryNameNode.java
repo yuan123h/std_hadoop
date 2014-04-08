@@ -411,7 +411,7 @@ public class SecondaryNameNode implements Runnable {
     downloadCheckpointFiles(sig);   // Fetch fsimage and edits
     doMerge(sig);                   // Do the merge
   
-    //
+    // 上传到namenode 节点上面
     // Upload the new image into the NameNode. Then tell the Namenode
     // to make this new uploaded image as the most current image.
     //
