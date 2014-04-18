@@ -36,6 +36,7 @@ import org.apache.hadoop.io.serializer.Serializer;
 
 /**
  * General reflection utils
+ * 使用反射 获取类的实例化对象
  */
 
 public class ReflectionUtils {
@@ -45,6 +46,7 @@ public class ReflectionUtils {
 
   /** 
    * Cache of constructors for each class. Pins the classes so they
+   * 缓存 类的构造函数。  拴住，保证不被清理
    * can't be garbage collected until ReflectionUtils can be collected.
    */
   private static final Map<Class<?>, Constructor<?>> CONSTRUCTOR_CACHE = 
