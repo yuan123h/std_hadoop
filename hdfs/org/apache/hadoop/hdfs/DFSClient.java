@@ -1794,6 +1794,9 @@ public class DFSClient implements FSConstants, java.io.Closeable {
     private long prefetchSize = 10 * defaultBlockSize;
     private BlockReader blockReader = null;
     private boolean verifyChecksum;
+    /**
+     * 缓存
+     */
     private LocatedBlocks locatedBlocks = null;
     private DatanodeInfo currentNode = null;
     private Block currentBlock = null;
@@ -1994,6 +1997,7 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       assert (locatedBlocks != null) : "locatedBlocks is null";
       List<LocatedBlock> blockRange = new ArrayList<LocatedBlock>();
       // search cached blocks first
+      //先从缓存中查找
       int blockIdx = locatedBlocks.findBlock(offset);
       if (blockIdx < 0) { // block is not cached
         blockIdx = LocatedBlocks.getInsertIndex(blockIdx);
@@ -2254,6 +2258,12 @@ public class DFSClient implements FSConstants, java.io.Closeable {
     }
 
         
+    /**
+     * 选择一个现在活着的DataNode
+     * @param block
+     * @return
+     * @throws IOException
+     */
     private DNAddrPair chooseDataNode(LocatedBlock block)
       throws IOException {
       while (true) {
@@ -2288,6 +2298,15 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       }
     } 
         
+    /**
+     * 从某一个数据块中读取一段数据
+     * @param block
+     * @param start
+     * @param end
+     * @param buf
+     * @param offset
+     * @throws IOException
+     */
     private void fetchBlockByteRange(LocatedBlock block, long start,
                                      long end, byte[] buf, int offset) throws IOException {
       //
@@ -2304,6 +2323,7 @@ public class DFSClient implements FSConstants, java.io.Closeable {
         DNAddrPair retval = chooseDataNode(block);
         DatanodeInfo chosenNode = retval.info;
         InetSocketAddress targetAddr = retval.addr;
+        //创建 reader
         BlockReader reader = null;
 
         int len = (int) (end - start + 1);
