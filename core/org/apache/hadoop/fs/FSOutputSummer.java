@@ -121,9 +121,12 @@ abstract public class FSOutputSummer extends OutputStream {
     flushBuffer(false);
   }
 
-  /* Forces any buffered output bytes to be checksumed and written out to
+  /**
+   *  Forces any buffered output bytes to be checksumed and written out to
    * the underlying output stream.  If keep is true, then the state of 
-   * this object remains intact.
+   * this object remains intact. </br>
+   * 强制写到 底层输出流中
+   * 
    */
   protected synchronized void flushBuffer(boolean keep) throws IOException {
     if (count != 0) {

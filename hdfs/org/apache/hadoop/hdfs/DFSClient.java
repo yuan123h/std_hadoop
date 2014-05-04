@@ -2690,6 +2690,9 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       }
 
       // create a new packet
+      /**
+       * 包的大小、 chunk的数目、 该包在Block中的偏移量offsetInBlock
+       */
       Packet(int pktSize, int chunksPerPkt, long offsetInBlock) {
         this.lastPacketInBlock = false;
         this.numChunks = 0;
@@ -2810,6 +2813,7 @@ public class DFSClient implements FSConstants, java.io.Closeable {
           synchronized (dataQueue) {
 
             // process IO errors if any
+        	// 这里比较复杂
             boolean doSleep = processDatanodeError(hasError, false);
 
             // wait for a packet to be sent.
@@ -2846,11 +2850,11 @@ public class DFSClient implements FSConstants, java.io.Closeable {
               // get new block from namenode.
               if (blockStream == null) {
                 LOG.debug("Allocating new block");
-                nodes = nextBlockOutputStream(src); 
+                nodes = nextBlockOutputStream(src); 	//打开到DataNode的连接
                 this.setName("DataStreamer for file " + src +
                              " block " + block);
                 response = new ResponseProcessor(nodes);
-                response.start();
+                response.start();	//启动ResponseProcessor线程
               }
 
               if (offsetInBlock >= blockSize) {
@@ -2961,10 +2965,10 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       }
     }
                   
-    //
+    /**
     // Processes reponses from the datanodes.  A packet is removed 
     // from the ackQueue when its response arrives.
-    //
+    */
     private class ResponseProcessor extends Thread {
 
       private volatile boolean closed = false;
@@ -3054,10 +3058,12 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       }
     }
 
+    /**
+    
     // If this stream has encountered any errors so far, shutdown 
     // threads and mark stream as closed. Returns true if we should
     // sleep for a while after returning from this call.
-    //
+    */
     private boolean processDatanodeError(boolean hasError, boolean isAppend) {
       if (!hasError) {
         return false;
@@ -3517,6 +3523,13 @@ public class DFSClient implements FSConstants, java.io.Closeable {
       return result;
     }
   
+    /**
+     * 定位下一个block
+     * @param start
+     * @param excludedNodes
+     * @return
+     * @throws IOException
+     */
     private LocatedBlock locateFollowingBlock(long start,
                                               DatanodeInfo[] excludedNodes
                                               ) throws IOException {     
