@@ -633,7 +633,9 @@ abstract public class Task implements Writable, Configurable {
         return split;
       }
     }  
-    /** 
+    /**交流线程{@link TaskReporter}  调用的方法 </br> 
+     * 和父线程交流
+     * 
      * The communication thread handles communication with the parent (Task Tracker). 
      * It sends progress updates if progress has been made or if the task needs to 
      * let the parent know that it's alive. It also pings the parent to see if it's alive. 
@@ -708,6 +710,9 @@ abstract public class Task implements Writable, Configurable {
       }
     }
 
+    /**
+     * 启动后台交流线程，和父线程交流
+     */
     public void startCommunicationThread() {
       if (pingThread == null) {
         pingThread = new Thread(this, "communication thread");

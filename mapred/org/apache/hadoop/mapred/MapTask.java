@@ -414,7 +414,8 @@ class MapTask extends Task {
 
     updateJobWithSplit(job, inputSplit);
     reporter.setInputSplit(inputSplit);
-
+    
+    // 是否使用 出错恢复策略 
     RecordReader<INKEY,INVALUE> in = isSkipping() ? 
         new SkippingRecordReader<INKEY,INVALUE>(inputSplit, umbilical, reporter) :
         new TrackedRecordReader<INKEY,INVALUE>(inputSplit, job, reporter);
@@ -850,6 +851,13 @@ class MapTask extends Task {
     }
   }
 
+  /**
+   * MapTask 辅助类
+   * @author yuanhuan
+   *
+   * @param <K>
+   * @param <V>
+   */
   class MapOutputBuffer<K extends Object, V extends Object> 
   implements MapOutputCollector<K, V>, IndexedSortable {
     private final int partitions;
